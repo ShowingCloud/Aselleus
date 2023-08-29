@@ -116,11 +116,11 @@ def calc_s3_etag(file_path, chunk_size = 1 * GB, enc = False, seed = None):
             md5s.append(hashlib.md5(data))
             i += 1
 
-        if len(md5s) < 1:
-            return '"{}"'.format(hashlib.md5().hexdigest())
+        #if len(md5s) < 1:
+        #    return '"{}"'.format(hashlib.md5().hexdigest())
 
-        if len(md5s) == 1:
-            return '"{}"'.format(md5s[0].hexdigest())
+        #if len(md5s) == 1:
+        #    return '"{}"'.format(md5s[0].hexdigest())
 
         digests = b''.join(m.digest() for m in md5s)
         digests_md5 = hashlib.md5(digests)
@@ -141,11 +141,11 @@ def calc_s3_sha256(file_path, chunk_size = 1 * GB, enc = False, seed = None):
             sha256s.append(hashlib.sha256(data))
             i += 1
 
-        if len(sha256s) < 1:
-            return '"{}"'.format(hashlib.sha256().hexdigest())
+        #if len(sha256s) < 1:
+        #    return '"{}"'.format(hashlib.sha256().hexdigest())
 
-        if len(sha256s) == 1:
-            return '"{}"'.format(sha256s[0].hexdigest())
+        #if len(sha256s) == 1:
+        #    return '"{}"'.format(sha256s[0].hexdigest())
 
         digests = b''.join(m.digest() for m in sha256s)
         digests_sha256 = hashlib.sha256(digests)
