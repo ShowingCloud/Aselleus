@@ -102,7 +102,7 @@ def encrypt_aes(data, chunk_size, seed, num):
     return AES.new(key, AES.MODE_CTR, counter = Counter.new(128, initial_value = iv)).encrypt(data)
 
 def calc_s3_etag(file_path, chunk_size = 1 * GB, enc = False, seed = None):
-    print("Calculating S3 Etag", file = sys.stderr)
+    print("Calculating S3 Etag:", file_path, file = sys.stderr)
     md5s = []
 
     with open(file_path, 'rb') as fp:
@@ -127,7 +127,7 @@ def calc_s3_etag(file_path, chunk_size = 1 * GB, enc = False, seed = None):
         return '"{}-{}"'.format(digests_md5.hexdigest(), len(md5s))
 
 def calc_s3_sha256(file_path, chunk_size = 1 * GB, enc = False, seed = None):
-    print("Calculating S3 SHA256", file = sys.stderr)
+    print("Calculating S3 SHA256:", file_path, file = sys.stderr)
     sha256s = []
 
     with open(file_path, 'rb') as fp:
