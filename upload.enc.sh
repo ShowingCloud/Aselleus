@@ -40,4 +40,5 @@ if [[ $completed == $num_parts ]] ; then
         aws s3api list-parts --bucket $bucket_name --key "$base_name" --upload-id $upload_id --output json --query '{Parts: Parts[*].{PartNumber: PartNumber, ETag: ETag, ChecksumSHA256: ChecksumSHA256}}' |tee "/tmp/$base_name.aws_s3api_parts"
         checksum=$(upload.py encsha256 "$file_path" "$seed")
         aws s3api complete-multipart-upload --bucket $bucket_name --key "$base_name" --upload-id $upload_id --multipart-upload "file:///tmp/$base_name.aws_s3api_parts" --checksum-sha256 $(echo $checksum |cut -f1 -d- |xxd -r -p |base64)-$(echo $checksum |cut -f2 -d-)
+        aws s3api put-object-tagging --bucket $bucket_name --key "$base_name" --tagging '{"TagSet": [{ "Key": "encryption seed", "Value": "'$seed'" }]}'
 fi
