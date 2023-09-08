@@ -35,3 +35,7 @@ if [[ $completed == $num_parts ]] ; then
         checksum=$(upload.py sha256 "$file_path")
         aws s3api complete-multipart-upload --bucket $bucket_name --key "$base_name" --upload-id $upload_id --multipart-upload "file:///tmp/$base_name.aws_s3api_parts" --checksum-sha256 $(echo $checksum |cut -f1 -d- |xxd -r -p |base64)-$(echo $checksum |cut -f2 -d-)
 fi
+
+# Another high-level implementation with sse-c
+# echo $seed |md5sum - |cut -f1 -d- |head -c 32 >key.bin
+# aws s3 cp "$file_path" s3://$bucket_name --sse-c --sse-c-key fileb://key.bin
