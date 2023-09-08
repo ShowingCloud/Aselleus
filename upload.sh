@@ -37,5 +37,5 @@ if [[ $completed == $num_parts ]] ; then
 fi
 
 # Another high-level implementation with sse-c
-# echo $seed |md5sum - |cut -f1 -d- |head -c 32 >key.bin
+# echo $seed |md5sum - |cut -f1 -d\ |head -c 32 >key.bin
 # aws s3 cp "$file_path" s3://$bucket_name --sse-c --sse-c-key fileb://key.bin
