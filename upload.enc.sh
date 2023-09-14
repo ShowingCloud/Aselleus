@@ -19,7 +19,7 @@ uploaded_parts=$(aws s3api list-parts --bucket $bucket_name --key "$base_name" -
 completed=0
 seed="" # takes 16 bytes hex (32 digits), all in upper case
 for ((i=1; i<=$num_parts; i++)); do
-        if ! grep -q "$i" <<< "$uploaded_parts"; then
+        if ! egrep -q "(^|[[:space:]])$i($|[[:space:]])" <<< "$uploaded_parts"; then
                 iv=$(echo "ibase=16; obase=10; $(echo $seed |cut -c 1-31) + $(printf "%032X" $((($i-1)*$part_size/16)))" |bc)
                 while [ ${#iv} -lt 32 ]; do
                         iv=0$iv
