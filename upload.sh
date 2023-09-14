@@ -18,7 +18,7 @@ uploaded_parts=$(aws s3api list-parts --bucket $bucket_name --key "$base_name" -
 
 completed=0
 for ((i=1; i<=$num_parts; i++)); do
-        if ! grep -q "$i" <<< "$uploaded_parts"; then
+        if ! egrep -q "(^|[[:space:]])$i($|[[:space:]])" <<< "$uploaded_parts"; then
                 dd if="$file_path" of="$part_file" bs=1048576 count=1024 skip=$((1024*($i-1)))
                 etag=$(aws s3api upload-part --bucket $bucket_name --key "$base_name" --part-number $i --upload-id $upload_id --body "$part_file" --checksum-algorithm SHA256 --checksum-sha256 $(sha256sum "$part_file" |cut -f1 -d\ |xxd -r -p |base64))
                 echo $i: $etag
