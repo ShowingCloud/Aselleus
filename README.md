@@ -9,3 +9,4 @@ Keywords: AWS, S3, Multipart, Deep Archive, Etag, SHA256, OpenSSL, AES-256-CTR, 
 - In case some chunks failed to upload, you can rerun the script multiple times to ensure the upload is finished. The uploading finishes only if all the checksums are correct.
 - Later when you download the file, you can use `openssl` to decrypt the entire file. No more need to use the scripts to decrypt.
 - No need to specify your own encrypting credentials. Whoever owns the bucket can decrypt the files. But you can easily add one if you wish to.
+- You may need to remove the failed uploads manually with `aws s3api abort-multipart-upload`.
