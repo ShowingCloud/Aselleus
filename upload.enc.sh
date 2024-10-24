@@ -4,7 +4,7 @@ bucket_name=""
 file_path=$1
 
 part_size=$((1024*1024*1024))
-upload_id=$2
+upload_id=$2 # use $2 only if there is an ongoing multipart upload
 part_file="$file_path.part_file"
 base_name=$(basename "$file_path") # eg. basename="dir/"$(basename "$file_path")
 
