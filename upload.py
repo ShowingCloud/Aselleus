@@ -7,10 +7,10 @@ import os
 import platform
 import time
 from tqdm import tqdm
-from Cryptodome.Protocol.KDF import PBKDF2
-from Cryptodome.Hash import SHA256
-from Cryptodome.Cipher import AES
-from Cryptodome.Util import Counter
+from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Hash import SHA256
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
 
 import boto3
 from boto3.s3.transfer import TransferConfig
