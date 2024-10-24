@@ -6,7 +6,9 @@ file_path=$1
 part_size=$((1024*1024*1024))
 upload_id=$2
 part_file="$file_path.part_file"
-base_name=$(basename "$file_path")
+base_name=$(basename "$file_path") # eg. basename="dir/"$(basename "$file_path")
+
+# export AWS_CA_BUNDLE=Cloudflare_CA.pem # for Cloudflare Zero Trust, but uploading doesn't seem to work
 
 if [[ -z $upload_id ]]; then
         upload_id=$(aws s3api create-multipart-upload --bucket $bucket_name --key "$base_name" --storage-class DEEP_ARCHIVE --checksum-algorithm SHA256 --query 'UploadId' --output text)
@@ -17,7 +19,9 @@ num_parts=$(( ($file_size + $part_size - 1) / $part_size ))
 uploaded_parts=$(aws s3api list-parts --bucket $bucket_name --key "$base_name" --upload-id $upload_id --query 'Parts[].PartNumber' --output text)
 
 completed=0
-seed="" # takes 16 bytes hex (32 digits), all in upper case
+seed="" # takes 16 bytes hex (32 digits), all in upper case.
+# eg. seed=$(md5sum "$file_path" |awk '{print $1}' |tr '[:lower:]' '[:upper:]')
+
 for ((i=1; i<=$num_parts; i++)); do
         if ! egrep -q "(^|[[:space:]])$i($|[[:space:]])" <<< "$uploaded_parts"; then
                 iv=$(echo "ibase=16; obase=10; $(echo $seed |cut -c 1-31) + $(printf "%032X" $((($i-1)*$part_size/16)))" |bc)
