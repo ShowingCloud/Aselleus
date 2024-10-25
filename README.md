@@ -10,3 +10,11 @@ Keywords: AWS, S3, Multipart, Deep Archive, Etag, SHA256, OpenSSL, AES-256-CTR, 
 - Later when you download the file, you can use `openssl` to decrypt the entire file. No more need to use the scripts to decrypt.
 - No need to specify your own encrypting credentials. Whoever owns the bucket can decrypt the files. But you can easily add one if you wish to.
 - You may need to remove the failed uploads manually with `aws s3api abort-multipart-upload`.
+
+## Technical Details
+- We use client-side encryption with AES256, in CTR (Counter) mode. All of the credentials required: Salt, Pass and IV, are derived from a pre-defined seed.
+- Typically we simply use the md5sum of the original file as the seed, just to be defensive against server-side scanning and possible leakage. Remember to record the original md5sum (in the scripts we record them in object tagging) since you won't be able to find them after encryption.
+- The initial vectors (IV) need to be calculated for each chunk, so that `openssl` can be used to decrypt the whole file. More specifically, inside each chunk IV is incremented by 1 each 16 Bytes, so for example if you're using 1 GB as chunk size you need to increment by `128 * 1024 * 1024` among each chunks.
+- Remember to add 0's before the IV values because `openssl enc -aes-256-ctr` requires IV to be exactly 32 digits long.
+- In `upload.py` we implemented functions to calculate the md5sum (called Etag in S3) and sha256sum values of the file, either encrypted or not. These checksums are not the same as that from `md5sum` and `sha256sum` commands. S3 calculates the checksums of each chunk, and then generate the checksum of the whole file from these ones of the chunks, along with the number of chunks.
+- The above sha256sum value is needed to complete a multipart upload so it's a guarantee of integrity. You can check the Etag value yourself to be more confident. After uploading it's displayed in the Entity tag colunmn in object overview.
