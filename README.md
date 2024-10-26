@@ -10,6 +10,7 @@ Keywords: AWS, S3, Multipart, Deep Archive, Etag, SHA256, OpenSSL, AES-256-CTR, 
 - Later when you download the file, you can use `openssl` to decrypt the entire file. No more need to use the scripts to decrypt.
 - No need to specify your own encrypting credentials. Whoever owns the bucket can decrypt the files. But you can easily add one if you wish to.
 - You may need to remove the failed uploads manually with `aws s3api abort-multipart-upload`.
+- `metadata.py` is provided to scan a directory and save the metadata of all files inside. For incremental backup you can also use this script to compare with the last backup and make backups to added and modified files only.
 
 ## Technical Details
 - We use client-side encryption with AES256, in CTR (Counter) mode. All of the credentials required: Salt, Pass and IV, are derived from a pre-defined seed.
